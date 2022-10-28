@@ -1,18 +1,20 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
 
     def get_message(self) -> str:
+        """
+        Метод который возвращает строку сообщения
+        с информацией о тренировке.
+        """
         return (f'Тип тренировки: {self.training_type}; '
                 f'Длительность: {self.duration:.3f} ч.; '
                 f'Дистанция: {self.distance:.3f} км; '
@@ -21,7 +23,13 @@ class InfoMessage:
 
 
 class Training:
-    """Базовый класс тренировки."""
+    """
+    Базовый класс тренировки.
+
+    M_IN_KM = перевод метров в километры,
+    LEN_STEP = длина шага в метрах,
+    MIN_IN_H = перевод часов в минуты.
+    """
     M_IN_KM: float = 1000
     LEN_STEP: float = 0.65
     MIN_IN_H: float = 60
@@ -33,6 +41,17 @@ class Training:
         self.action = action
         self.duration = duration
         self.weight = weight
+        """
+        Конструктор класса.
+
+        Указание размерностей:
+
+        action = кол-во совершенных действий,
+        duration = время в часах,
+        distance = расстояние в километрах,
+        speed = скорость в км/ч,
+        weight = вес в кг.
+        """
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
@@ -57,9 +76,12 @@ class Training:
 
 
 class Running(Training):
-    """Тренировка: бег."""
+    """
+    Тренировка: бег.
+
+    LEN_STEP = длина шага в метрах.
+    """
     LEN_STEP: float = 0.65
-    M_IN_KM: float = 1000
     CALORIES_MEAN_SPEED_MULTIPLIER: float = 18
     CALORIES_MEAN_SPEED_SHIFT: float = 1.79
 
@@ -68,6 +90,15 @@ class Running(Training):
                  duration: float,
                  weight: float) -> None:
         super().__init__(action, duration, weight)
+        """
+        Конструктор класса.
+
+        Указание размерностей:
+
+        action = кол-во совершенных действий,
+        duration = время в часах,
+        weight = вес в кг.
+        """
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -91,6 +122,16 @@ class SportsWalking(Training):
                  height: float) -> None:
         super().__init__(action, duration, weight)
         self.height = height
+        """
+        Конструктор класса.
+
+        Указание размерностей:
+
+        action = кол-во совершенных действий,
+        duration = время в часах,
+        weight = вес в кг,
+        height = рост в сантиметрах.
+        """
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -102,9 +143,12 @@ class SportsWalking(Training):
 
 
 class Swimming(Training):
-    """Тренировка: плавание."""
+    """
+    Тренировка: плавание.
+
+    LEN_STEP = длина одного гребка.
+    """
     LEN_STEP: float = 1.38
-    M_IN_KM: float = 1000
     CALORIES_MEAN_SPEED_MULTIPLIER: float = 18
     CALORIES_MEAN_SPEED_SHIFT: float = 1.1
     CALORIES_WEIGHT_MULTIPLIER: float = 2
@@ -119,6 +163,18 @@ class Swimming(Training):
         super().__init__(action, duration, weight)
         self.length_pool = length_pool
         self.count_pool = count_pool
+        """
+        Конструктор класса.
+
+        Указание размерностей:
+
+        action = кол-во совершенных действий,
+        duration = время в часах,
+        weight = вес в кг,
+        height = рост в сантиметрах,
+        length_pool = длина бассейна в метрах,
+        count_pool = сколько раз переплыл бассейн.
+        """
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
@@ -137,14 +193,17 @@ class Swimming(Training):
                 * self.weight * self.duration)
 
 
-def read_package(workout_type: str, data: list) -> Training:
+def read_package(workout_type: str, data: list[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    dictionary = {'SWM': Swimming,
-                  'RUN': Running,
-                  'WLK': SportsWalking}
-    if workout_type in dictionary:
-        result = dictionary[workout_type](*data)
-    return result
+    dictionary: dict(str, list[Training]) = {
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking
+    }
+    if workout_type not in dictionary:
+        raise KeyError("Нет Данных о тренировке")
+    else:
+        return dictionary[workout_type](*data)
 
 
 def main(training: Training) -> None:

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Dict
 
 
 @dataclass
@@ -167,7 +167,7 @@ class Swimming(Training):
         """
         Конструктор класса.
 
-        Указание размерностей:
+        Описание атрибутов:
 
         action = кол-во совершенных действий,
         duration = время в часах,
@@ -196,15 +196,14 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: List[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    dictionary: dict(str, list[Training]) = {
+    dictionary: Dict(str, List[Training]) = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking
     }
-    if workout_type not in dictionary:
-        raise KeyError("Нет Данных о тренировке")
-    else:
-        return dictionary[workout_type](*data)
+    if workout_type in dictionary:
+        training_type = dictionary[workout_type](*data)
+        return training_type
 
 
 def main(training: Training) -> None:

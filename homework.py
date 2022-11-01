@@ -196,14 +196,14 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: List[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    dictionary: Dict(str, List[Training]) = {
+    dictionary: Dict[str, List[Training]] = {
         'SWM': Swimming,
         'RUN': Running,
-        'WLK': SportsWalking
+        'WLK': SportsWalking,
     }
-    if workout_type in dictionary:
-        training_type = dictionary[workout_type](*data)
-        return training_type
+    if workout_type not in dictionary:
+        raise KeyError(f'Ошибка типа тренировки {workout_type}')
+    return dictionary[workout_type](*data)
 
 
 def main(training: Training) -> None:

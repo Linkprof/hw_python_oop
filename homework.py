@@ -199,7 +199,7 @@ def read_package(workout_type: str, data: List[float]) -> Training:
     dictionary: Dict[str, List[Training]] = {
         'SWM': Swimming,
         'RUN': Running,
-        'WLK': SportsWalking,
+        'WLK': SportsWalking
     }
     if workout_type not in dictionary:
         raise KeyError(f'Ошибка типа тренировки {workout_type}')

@@ -39,9 +39,6 @@ class Training:
                  action: float,
                  duration: float,
                  weight: float) -> None:
-        self.action = action
-        self.duration = duration
-        self.weight = weight
         """
         Конструктор класса.
 
@@ -49,18 +46,20 @@ class Training:
 
         action = кол-во совершенных действий,
         duration = время в часах,
-        distance = расстояние в километрах,
-        speed = скорость в км/ч,
-        weight = вес в кг.
+        distance = расстояние в километрах.
         """
+        self.action = action
+        self.duration = duration
+        self.weight = weight
+
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
-        return (self.action * self.LEN_STEP / self.M_IN_KM)
+        return self.action * self.LEN_STEP / self.M_IN_KM
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        return (self.get_distance() / self.duration)
+        return self.get_distance() / self.duration
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -86,20 +85,6 @@ class Running(Training):
     CALORIES_MEAN_SPEED_MULTIPLIER: float = 18
     CALORIES_MEAN_SPEED_SHIFT: float = 1.79
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float) -> None:
-        super().__init__(action, duration, weight)
-        """
-        Конструктор класса.
-
-        Указание размерностей:
-
-        action = кол-во совершенных действий,
-        duration = время в часах,
-        weight = вес в кг.
-        """
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -121,8 +106,6 @@ class SportsWalking(Training):
                  duration: float,
                  weight: float,
                  height: float) -> None:
-        super().__init__(action, duration, weight)
-        self.height = height
         """
         Конструктор класса.
 
@@ -133,6 +116,9 @@ class SportsWalking(Training):
         weight = вес в кг,
         height = рост в сантиметрах.
         """
+        super().__init__(action, duration, weight)
+        self.height = height
+
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -161,9 +147,6 @@ class Swimming(Training):
                  weight: float,
                  length_pool: float,
                  count_pool: int) -> None:
-        super().__init__(action, duration, weight)
-        self.length_pool = length_pool
-        self.count_pool = count_pool
         """
         Конструктор класса.
 
@@ -176,6 +159,10 @@ class Swimming(Training):
         length_pool = длина бассейна в метрах,
         count_pool = сколько раз переплыл бассейн.
         """
+        super().__init__(action, duration, weight)
+        self.length_pool = length_pool
+        self.count_pool = count_pool
+
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
@@ -196,7 +183,7 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: List[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    dictionary: Dict[str, List[Training]] = {
+    dictionary: Dict[str, list[Training]] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking
